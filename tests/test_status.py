@@ -25,7 +25,7 @@ def threaded_status(qtbot):
     thread.status_finished.connect(listener.finished)
     yield listener, thread, status
     if thread.isRunning():
-        thread.quit()
+        thread.wait(5000)
 
 def test_previously_done_status_in_thread(threaded_status):
     listener, thread, status = threaded_status
