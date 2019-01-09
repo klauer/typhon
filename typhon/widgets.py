@@ -12,6 +12,7 @@ from qtpy.QtWidgets import (QAction, QPushButton, QVBoxLayout, QWidget,
                             QToolBar, QDockWidget)
 from pydm.widgets import PyDMLabel, PyDMEnumComboBox, PyDMLineEdit
 from pydm.widgets.base import PyDMWidget
+from pydm.utilities import close_widget_connections
 from pyqtgraph.parametertree import parameterTypes as ptypes
 
 ###########
@@ -238,3 +239,9 @@ class TyphonDesignerMixin(PyDMWidget):
     def _tx(self, value):
         """Receive information from happi channel"""
         self.add_device(value['obj'])
+
+    def deleteLater(self):
+        """Close connections before destroying"""
+        logger.debug("Deleting %r", self)
+        close_widget_connections(self)
+        super().deleteLater()

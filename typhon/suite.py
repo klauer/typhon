@@ -7,6 +7,7 @@ import logging
 ############
 # External #
 ############
+from pydm.utilities import close_widget_connections
 from pyqtgraph.parametertree import ParameterTree, parameterTypes as ptypes
 from qtpy.QtCore import Signal, Slot, Qt
 from qtpy.QtWidgets import QDockWidget, QHBoxLayout, QVBoxLayout, QWidget
@@ -354,6 +355,12 @@ class TyphonSuite(TyphonBase):
             for item in flatten_tree(group):
                 items[item.value()] = item
         return items.get(widget)
+
+    def deleteLater(self):
+        """Close all widget connections before deleting"""
+        logger.debug("Deleting %r", self)
+        close_widget_connections(self)
+        super().deleteLater()
 
     def _show_sidebar(self, widget, dock):
         sidebar = self._get_sidebar(widget)
