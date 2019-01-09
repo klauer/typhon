@@ -35,7 +35,6 @@ def register_signal(signal):
     # Warn the user if they are adding twice
     if signal.name in signal_registry:
         logger.debug("A signal named %s is already registered!", signal.name)
-        return
     signal_registry[signal.name] = signal
 
 
