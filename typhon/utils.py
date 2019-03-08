@@ -50,19 +50,28 @@ def UsesEnums(*enum_classes, base=QWidget):
         for enum in enum_classes:
             Q_ENUMS(enum)
 
-        _qt_enums = enum_classes
+        _qt_enums_used_ = enum_classes
+
+        def __init_subclass__(cls, **kwargs):
+            super().__init_subclass__(**kwargs)
+            cls._qt_enums_used_ = cls._find_all_qt_enums()
 
         @classmethod
-        def _find_qt_enums(class_):
-            'Return the set of all used Q_ENUMS on this class'
-            return set(
-                sum((cls._qt_enums
-                     for cls in class_.mro()
-                     if isinstance(getattr(cls, '_qt_enums', None), tuple)
-                     ),
-                    tuple()
-                    )
-            )
+        def _find_all_qt_enums(cls):
+            '''
+            The set of all used Q_ENUMS on this class
+            '''
+            used_enums = set()
+            for mro_class in cls.mro():
+                try:
+                    cls_enums = mro_class._qt_enums_used_
+                except AttributeError:
+                    ...
+                else:
+                    if cls_enums is not None:
+                        for enum in cls_enums:
+                            used_enums.add(enum)
+            return used_enums
 
     for enum in enum_classes:
         # Allow access via cls.enum_class_name.member
