@@ -32,64 +32,79 @@ logger = logging.getLogger(__name__)
 ui_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'ui')
 
 
-def UsesEnums(*enum_classes, base=QWidget):
+class EnumBase(QWidget):
+    _qt_enums_used_ = set()
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls._qt_enums_used_ = cls._find_all_qt_enums()
+
+    @classmethod
+    def _find_all_qt_enums(cls):
+        '''
+        The set of all used Q_ENUMS on this class
+        '''
+        used_enums = set()
+        for mro_class in cls.mro():
+            try:
+                cls_enums = mro_class._qt_enums_used_
+            except AttributeError:
+                ...
+            else:
+                if cls_enums is not None:
+                    for enum in cls_enums:
+                        used_enums.add(enum)
+        return used_enums
+
+
+def UsesEnums(*enum_classes, namespace, mixin_name='EnumMixin'):
     '''
     Add Qt Designer compatible enums to a class. Under the hood, this generates
     a base class for the target class.
 
     Parameters
     ----------
-    *enum_classes : enum.Enum or namespace
-        Enum classes - can be either of type `enum.Enum` or a simple namespace
+    enum_class : enum.Enum or namespace
+        Enum class - can be either of type `enum.Enum` or a simple namespace
         where one attribute is associated with one value.
-    base : class
-        The base class for the generated Qt-compatible class. Must be either
-        QObject or QWidget (or have one in the class hierarchy)
     '''
-    class EnumBase(base):
-        for enum in enum_classes:
-            Q_ENUMS(enum)
+    mixin_class = []  # placeholder, filled in by exec()
+    exec_globals = dict(enum_classes=enum_classes,
+                        EnumBase=EnumBase,
+                        Q_ENUMS=Q_ENUMS,
+                        mixin_class=mixin_class,
+                        namespace=namespace,
+                        **{cls.__name__: cls for cls in enum_classes})
 
-        _qt_enums_used_ = enum_classes
+    lines = [f'class {namespace}(EnumBase):']
+    for enum_class in enum_classes:
+        lines.append(f'    {enum_class.__name__} = {enum_class.__name__}')
+    lines.append(f'    Q_ENUMS(*enum_classes)')
+    lines.append(f'mixin_class.append({namespace})')
 
-        def __init_subclass__(cls, **kwargs):
-            super().__init_subclass__(**kwargs)
-            cls._qt_enums_used_ = cls._find_all_qt_enums()
+    exec('\n'.join(lines), exec_globals)
 
-        @classmethod
-        def _find_all_qt_enums(cls):
-            '''
-            The set of all used Q_ENUMS on this class
-            '''
-            used_enums = set()
-            for mro_class in cls.mro():
-                try:
-                    cls_enums = mro_class._qt_enums_used_
-                except AttributeError:
-                    ...
-                else:
-                    if cls_enums is not None:
-                        for enum in cls_enums:
-                            used_enums.add(enum)
-            return used_enums
+    mixin_class, = mixin_class
+    mixin_class.__name__ = mixin_name
+    mixin_class.__qualname__ = mixin_name
 
-    for enum in enum_classes:
+    for enum_class in enum_classes:
         # Allow access via cls.enum_class_name.member
-        setattr(EnumBase, enum.__name__, enum)
+        setattr(mixin_class, enum_class.__name__, enum_class)
 
         # Allow access via cls.member (omitting class_name.)
-        if hasattr(enum, '__members__'):
-            # For enum.Enum
-            for name, member in enum.__members__.items():
+        if hasattr(enum_class, '__members__'):
+            # For enum_class.enum_class
+            for name, member in enum_class.__members__.items():
                 setattr(EnumBase, name, member)
         else:
             # For any other type
-            instance = enum()
+            instance = enum_class()
             for name in dir(instance):
                 if not name.startswith('_'):
                     setattr(EnumBase, name, getattr(instance, name))
 
-    return EnumBase
+    return mixin_class
 
 
 def channel_from_signal(signal):

@@ -220,10 +220,16 @@ class SignalOrder(IntEnum):
     byName = 1
 
 
-QtSignalOrder = UsesEnums(SignalOrder)
+class SignalOrderB(IntEnum):
+    """Option to sort signals"""
+    byKindA = 0
+    byNameA = 1
 
 
-class TyphonSignalPanel(QtSignalOrder, TyphonBase, TyphonDesignerMixin):
+EnumMixin = UsesEnums(SignalOrder, SignalOrderB, namespace='TyphonSignalPanel')
+
+
+class TyphonSignalPanel(EnumMixin, TyphonBase, TyphonDesignerMixin):
     """
     Panel of Signals for Device
     """
@@ -238,6 +244,7 @@ class TyphonSignalPanel(QtSignalOrder, TyphonBase, TyphonDesignerMixin):
         # Add default Kind values
         self._kinds = dict.fromkeys([kind.name for kind in Kind], True)
         self._signal_order = SignalOrder.byKind
+        self._signal_order_base = SignalOrder.byKind
 
     def _get_kind(self, kind):
         return self._kinds[kind]
@@ -263,6 +270,17 @@ class TyphonSignalPanel(QtSignalOrder, TyphonBase, TyphonDesignerMixin):
     showOmitted = Property(bool,
                            partial(_get_kind, kind='omitted'),
                            partial(_set_kind, kind='omitted'))
+
+    @Property(SignalOrderB)
+    def sortByB(self):
+        """Order signals will be placed in layout"""
+        return self._signal_order
+
+    @sortByB.setter
+    def sortByB(self, value):
+        if value != self._signal_order:
+            self._signal_order = value
+            self._set_layout()
 
     @Property(SignalOrder)
     def sortBy(self):
@@ -329,3 +347,7 @@ class TyphonSignalPanel(QtSignalOrder, TyphonBase, TyphonDesignerMixin):
     def sizeHint(self):
         """Default SizeHint"""
         return QSize(240, 140)
+
+
+print(TyphonSignalPanel.SignalOrder)
+print(TyphonSignalPanel.SignalOrderB)
