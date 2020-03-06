@@ -2,7 +2,7 @@ import os.path
 import logging
 
 from ophyd import Device
-from qtpy import uic
+from qtpy import uic, QtWidgets
 from qtpy.QtCore import Property, Slot
 
 from .plugins import register_signal
@@ -15,7 +15,7 @@ from .widgets import TyphosDesignerMixin
 logger = logging.getLogger(__name__)
 
 
-class TyphosPositionerWidget(TyphosBase, TyphosDesignerMixin):
+class TyphosPositionerWidget(QtWidgets.QWidget, TyphosBase, TyphosDesignerMixin):
     """
     Widget to interact with an ``ophyd.Positioner``
 

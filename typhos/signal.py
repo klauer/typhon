@@ -10,6 +10,7 @@ import logging
 from ophyd import Kind
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalBase, EpicsSignalRO
 from pydm.widgets.display_format import DisplayFormat
+from qtpy import QtWidgets
 from qtpy.QtCore import Property, Q_ENUMS, QSize, QTimer
 from qtpy.QtWidgets import (QGridLayout, QHBoxLayout, QLabel)
 
@@ -267,7 +268,7 @@ class SignalOrder:
     byName = 1
 
 
-class TyphosSignalPanel(TyphosBase, TyphosDesignerMixin, SignalOrder):
+class TyphosSignalPanel(QtWidgets.QWidget, TyphosBase, TyphosDesignerMixin, SignalOrder):
     """
     Panel of Signals for Device
     """

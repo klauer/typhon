@@ -33,7 +33,8 @@ class DisplayTypes:
         return Enum('TemplateEnum', entries)
 
 
-class TyphosDeviceDisplay(TyphosBase, TyphosDesignerMixin, DisplayTypes):
+class TyphosDeviceDisplay(QWidget, TyphosBase, TyphosDesignerMixin,
+                          DisplayTypes):
     """
     Main Panel display for a signal Ophyd Device
 

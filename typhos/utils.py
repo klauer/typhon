@@ -39,7 +39,7 @@ except ImportError:
 
         def set(self, value, *, timestamp=None, force=False):
             raise ReadOnlyError("The signal {} is readonly.".format(self.name))
-from qtpy.QtCore import QSize
+from qtpy import QtCore
 from qtpy.QtGui import QColor, QPainter, QMovie
 from qtpy.QtWidgets import (QApplication, QStyle, QStyleOption, QStyleFactory,
                             QWidget, QMessageBox, QLabel)
@@ -210,7 +210,7 @@ class TyphosLoading(QLabel):
     """Simple widget that displays a loading GIF"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._icon_size = QSize(32, 32)
+        self._icon_size = QtCore.QSize(32, 32)
         if TyphosLoading.loading_gif is None:
             loading_path = os.path.join(ui_dir, 'loading.gif')
             TyphosLoading.loading_gif = QMovie(loading_path)
@@ -229,7 +229,7 @@ class TyphosLoading(QLabel):
         self._animation.setScaledSize(self._icon_size)
 
 
-class TyphosBase(QWidget):
+class TyphosBase(QtCore.QObject):
     """Base widget for all Typhos widgets that interface with devices"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -246,15 +246,15 @@ class TyphosBase(QWidget):
         logger.debug("Adding device %s ...", device.name)
         self.devices.append(device)
 
-    def paintEvent(self, event):
-        # This is necessary because by default QWidget ignores stylesheets
-        # https://wiki.qt.io/How_to_Change_the_Background_Color_of_QWidget
-        opt = QStyleOption()
-        opt.initFrom(self)
-        painter = QPainter()
-        painter.begin(self)
-        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
-        super().paintEvent(event)
+    # def paintEvent(self, event):
+    #     # This is necessary because by default QWidget ignores stylesheets
+    #     # https://wiki.qt.io/How_to_Change_the_Background_Color_of_QWidget
+    #     opt = QStyleOption()
+    #     opt.initFrom(self)
+    #     painter = QPainter()
+    #     painter.begin(self)
+    #     self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+    #     super().paintEvent(event)
 
     @classmethod
     def from_device(cls, device, parent=None, **kwargs):
