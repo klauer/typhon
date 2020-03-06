@@ -6,7 +6,7 @@ from qtpy import uic, QtWidgets
 from qtpy.QtCore import Property, Slot
 
 from .plugins import register_signal
-from .utils import (TyphosBase, ui_dir, channel_from_signal, grab_kind,
+from .utils import (TyphosBaseWidget, ui_dir, channel_from_signal, grab_kind,
                     raise_to_operator, reload_widget_stylesheet)
 from .status import TyphosStatusThread
 from .widgets import TyphosDesignerMixin
@@ -15,7 +15,7 @@ from .widgets import TyphosDesignerMixin
 logger = logging.getLogger(__name__)
 
 
-class TyphosPositionerWidget(QtWidgets.QWidget, TyphosBase, TyphosDesignerMixin):
+class TyphosPositionerWidget(TyphosBaseWidget, TyphosDesignerMixin):
     """
     Widget to interact with an ``ophyd.Positioner``
 

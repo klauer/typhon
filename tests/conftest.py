@@ -44,7 +44,7 @@ from pydm import PyDMApplication
 ###########
 import typhos
 from typhos.plugins.happi import register_client
-from typhos.utils import TyphosBase
+from typhos.utils import TyphosBaseWidget
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ MODULE_PATH = pathlib.Path(__file__).parent
 
 # Patch TyphosConsole on TyphosSuite. Creation of more than one QtConsole
 # quicky in the test suite causes instabilities
-typhos.TyphosSuite.default_tools['Console'] = TyphosBase
+typhos.TyphosSuite.default_tools['Console'] = TyphosBaseWidget
 
 
 def pytest_addoption(parser):

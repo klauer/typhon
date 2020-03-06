@@ -12,18 +12,18 @@ import logging
 from ophyd import Device
 from timechart.displays.main_display import TimeChartDisplay
 from timechart.utilities.utils import random_color
+from qtpy import QtWidgets
 from qtpy.QtCore import Slot
-from qtpy.QtWidgets import (QComboBox, QPushButton, QLabel, QVBoxLayout,
-                            QHBoxLayout)
+
 ##########
 # Module #
 ##########
-from ..utils import (channel_from_signal, clean_attr, clean_name, TyphosBase)
+from ..utils import (channel_from_signal, clean_attr, clean_name, TyphosBaseWidget)
 
 logger = logging.getLogger(__name__)
 
 
-class TyphosTimePlot(TyphosBase):
+class TyphosTimePlot(TyphosBaseWidget):
     """
     Generalized widget for plotting Ophyd signals
 
@@ -37,13 +37,13 @@ class TyphosTimePlot(TyphosBase):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         # Setup layout
-        self.setLayout(QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(2, 2, 2, 2)
         # Make sure we can add signals
-        self.signal_combo = QComboBox()
-        self.signal_combo_label = QLabel('Available Signals: ')
-        self.signal_create = QPushButton('Connect')
-        self.signal_combo_layout = QHBoxLayout()
+        self.signal_combo = QtWidgets.QComboBox()
+        self.signal_combo_label = QtWidgets.QLabel('Available Signals: ')
+        self.signal_create = QtWidgets.QPushButton('Connect')
+        self.signal_combo_layout = QtWidgets.QHBoxLayout()
         self.signal_combo_layout.addWidget(self.signal_combo_label, 0)
         self.signal_combo_layout.addWidget(self.signal_combo, 1)
         self.signal_combo_layout.addWidget(self.signal_create, 0)

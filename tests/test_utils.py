@@ -12,7 +12,7 @@ import simplejson as json
 
 import typhos
 from typhos.utils import (use_stylesheet, clean_name, grab_kind,
-                          TyphosBase, raise_to_operator, load_suite,
+                          TyphosBaseWidget, raise_to_operator, load_suite,
                           saved_template, no_device_lazy_load)
 
 class NestedDevice(Device):
@@ -69,7 +69,7 @@ def test_qtdesigner_env():
 
 
 def test_typhosbase_repaint_smoke(qtbot):
-    tp = TyphosBase()
+    tp = TyphosBaseWidget()
     qtbot.addWidget(tp)
     pe = QPaintEvent(QRect(1, 2, 3, 4))
     tp.paintEvent(pe)

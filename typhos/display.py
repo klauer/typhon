@@ -10,7 +10,8 @@ from qtpy.QtWidgets import QHBoxLayout, QWidget
 
 import pcdsutils
 
-from .utils import (ui_dir, TyphosBase, clear_layout, reload_widget_stylesheet)
+from .utils import (ui_dir, TyphosBase, TyphosBaseWidget, clear_layout,
+                    reload_widget_stylesheet)
 from .widgets import TyphosDesignerMixin
 
 
@@ -33,8 +34,7 @@ class DisplayTypes:
         return Enum('TemplateEnum', entries)
 
 
-class TyphosDeviceDisplay(QWidget, TyphosBase, TyphosDesignerMixin,
-                          DisplayTypes):
+class TyphosDeviceDisplay(TyphosBaseWidget, TyphosDesignerMixin, DisplayTypes):
     """
     Main Panel display for a signal Ophyd Device
 

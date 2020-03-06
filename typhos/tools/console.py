@@ -5,16 +5,16 @@ import tempfile
 import threading
 from time import localtime
 
-from qtpy.QtWidgets import QApplication, QHBoxLayout
+from qtpy import QtWidgets
 from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtconsole.manager import QtKernelManager
 
-from ..utils import TyphosBase, make_identifier
+from ..utils import TyphosBaseWidget, make_identifier
 
 logger = logging.getLogger(__name__)
 
 
-class TyphosConsole(TyphosBase):
+class TyphosConsole(TyphosBaseWidget):
     """
     IPython Widget for Typhos Display
 
@@ -33,7 +33,7 @@ class TyphosConsole(TyphosBase):
         super().__init__(parent=parent)
         # Setup widget
         self.kernel = RichJupyterWidget()
-        self.setLayout(QHBoxLayout())
+        self.setLayout(QtWidgets.QHBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.kernel)
         # Create a Kernel
@@ -45,13 +45,12 @@ class TyphosConsole(TyphosBase):
         self.kernel.kernel_manager = kernel_manager
         self.kernel.kernel_client = kernel_client
         # Ensure we shutdown the kernel
-        app = QApplication.instance()
+        app = QtWidgets.QApplication.instance()
         app.aboutToQuit.connect(self.shutdown)
         # Styling
         self.kernel.syntax_style = 'monokai'
         self.kernel.set_default_style(colors='Linux')
         # Ensure cleanup
-        app = QApplication.instance()
         app.aboutToQuit.connect(self.shutdown)
 
     def sizeHint(self):

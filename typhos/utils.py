@@ -39,7 +39,7 @@ except ImportError:
 
         def set(self, value, *, timestamp=None, force=False):
             raise ReadOnlyError("The signal {} is readonly.".format(self.name))
-from qtpy import QtCore
+from qtpy import QtCore, QtWidgets
 from qtpy.QtGui import QColor, QPainter, QMovie
 from qtpy.QtWidgets import (QApplication, QStyle, QStyleOption, QStyleFactory,
                             QWidget, QMessageBox, QLabel)
@@ -246,16 +246,6 @@ class TyphosBase(QtCore.QObject):
         logger.debug("Adding device %s ...", device.name)
         self.devices.append(device)
 
-    # def paintEvent(self, event):
-    #     # This is necessary because by default QWidget ignores stylesheets
-    #     # https://wiki.qt.io/How_to_Change_the_Background_Color_of_QWidget
-    #     opt = QStyleOption()
-    #     opt.initFrom(self)
-    #     painter = QPainter()
-    #     painter.begin(self)
-    #     self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
-    #     super().paintEvent(event)
-
     @classmethod
     def from_device(cls, device, parent=None, **kwargs):
         """
@@ -277,6 +267,22 @@ class TyphosBase(QtCore.QObject):
         instance = cls(parent=parent, **kwargs)
         instance.add_device(device)
         return instance
+
+
+class TyphosBaseWidget(QtWidgets.QWidget, TyphosBase):
+    def paintEvent(self, event):
+        # This is necessary because by default QWidget ignores stylesheets
+        # https://wiki.qt.io/How_to_Change_the_Background_Color_of_QWidget
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter()
+        painter.begin(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+        super().paintEvent(event)
+
+
+class TyphosBaseSplitter(QtWidgets.QSplitter, TyphosBase):
+    ...
 
 
 def make_identifier(name):

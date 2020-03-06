@@ -15,12 +15,11 @@ from qtpy.QtCore import Signal, Slot, Qt
 from qtpy.QtWidgets import QWidget
 import pcdsutils.qt
 
-
 ###########
 # Package #
 ###########
 from .display import TyphosDeviceDisplay
-from .utils import (clean_name, TyphosBase, flatten_tree, raise_to_operator,
+from .utils import (clean_name, TyphosBaseSplitter, flatten_tree, raise_to_operator,
                     save_suite, saved_template)
 from .widgets import TyphosSidebarItem, SubDisplay
 from .tools import TyphosTimePlot, TyphosLogDisplay, TyphosConsole
@@ -75,7 +74,7 @@ class DeviceParameter(SidebarParameter):
                          **opts)
 
 
-class TyphosSuite(QtWidgets.QSplitter, TyphosBase):
+class TyphosSuite(TyphosBaseSplitter):
     """
     Complete Typhos Window
 
@@ -371,6 +370,7 @@ class TyphosSuite(QtWidgets.QSplitter, TyphosBase):
                 logger.debug("Using default TyphosSuite tools ...")
                 tools = cls.default_tools
                 for name, tool in tools.items():
+                    print('tools', tools)
                     try:
                         display.add_tool(name, tool())
                     except Exception:

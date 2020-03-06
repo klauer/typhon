@@ -18,7 +18,7 @@ from qtpy.QtWidgets import (QGridLayout, QHBoxLayout, QLabel)
 #  Package  #
 #############
 from .utils import (channel_name, clear_layout, clean_attr, grab_kind,
-                    is_signal_ro, TyphosBase, TyphosLoading)
+                    is_signal_ro, TyphosBaseWidget, TyphosLoading)
 from .widgets import (TyphosLineEdit, TyphosComboBox, TyphosLabel,
                       TyphosDesignerMixin, ImageDialogButton,
                       WaveformDialogButton, SignalDialogButton)
@@ -268,7 +268,7 @@ class SignalOrder:
     byName = 1
 
 
-class TyphosSignalPanel(QtWidgets.QWidget, TyphosBase, TyphosDesignerMixin, SignalOrder):
+class TyphosSignalPanel(TyphosBaseWidget, TyphosDesignerMixin, SignalOrder):
     """
     Panel of Signals for Device
     """

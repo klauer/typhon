@@ -1,12 +1,12 @@
 import logging
 
+from qtpy import QtWidgets
 from pydm.widgets.logdisplay import PyDMLogDisplay
-from qtpy.QtWidgets import QVBoxLayout
 
-from ..utils import TyphosBase
+from ..utils import TyphosBaseWidget
 
 
-class TyphosLogDisplay(TyphosBase):
+class TyphosLogDisplay(TyphosBaseWidget):
     """Typhos Logging Display"""
     def __init__(self, level=logging.INFO, parent=None):
         super().__init__(parent=parent)
@@ -15,7 +15,7 @@ class TyphosLogDisplay(TyphosBase):
         # end of the Python session. For the long term this issue will be
         # resolved with https://github.com/slaclab/pydm/issues/474
         self.logdisplay = PyDMLogDisplay(logname='not_set', level=level)
-        self.setLayout(QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().addWidget(self.logdisplay)
 
     def add_device(self, device):
