@@ -75,12 +75,12 @@ class DeviceParameter(SidebarParameter):
                          **opts)
 
 
-class TyphosSuite(TyphosBase):
+class TyphosSuite(QtWidgets.QSplitter, TyphosBase):
     """
     Complete Typhos Window
 
-    This contains all the neccesities to load tools and devices into a Typhos
-    window.
+    This contains all the necessities for loading tools and devices into a
+    Typhos window.
 
     Parameters
     ----------
@@ -103,17 +103,19 @@ class TyphosSuite(TyphosBase):
         self._bar = pcdsutils.qt.QPopBar(title='Suite', parent=self,
                                          widget=self._tree, pin=pin)
 
-        self.setLayout(QtWidgets.QHBoxLayout())
-        self.layout().setSpacing(1)
-        self.layout().setContentsMargins(0, 0, 0, 0)
+        # self.setLayout(QtWidgets.QSplitter())
+        # self.layout().setSpacing(1)
+        # self.layout().setContentsMargins(0, 0, 0, 0)
 
         self._content_frame = QtWidgets.QFrame(self)
         self._content_frame.setObjectName("content")
         self._content_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self._content_frame.setLayout(QtWidgets.QHBoxLayout())
 
-        self.layout().addWidget(self._bar)
-        self.layout().addWidget(self._content_frame)
+        # self.layout().addWidget(self._bar)
+        # self.layout().addWidget(self._content_frame)
+        self.addWidget(self._bar)
+        self.addWidget(self._content_frame)
 
         self.embedded_dock = None
 
